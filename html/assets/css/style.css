@@ -19,10 +19,10 @@ p {
 }
 
 #id-card {
-  position: relative;
+  position: fixed;
   display: none;
-  margin: 280px 1400px 0 0;
-  left: 10vh;
+  bottom: 20px;
+  right: 20px;
   width: 485px;
   height: 383px;
   padding: 54px 17px 10px 144px;

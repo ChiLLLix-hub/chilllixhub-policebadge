@@ -1,18 +1,33 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 
 RegisterServerEvent('badge:open')
-AddEventHandler('badge:open', function(ID, targetID, type)
-	local Player = QBCore.Functions.GetPlayer(ID)
+AddEventHandler('badge:open', function(targetID, type)
+	-- Use server-authoritative source; never trust a client-supplied player ID.
+	local callerID = source
+	local Player = QBCore.Functions.GetPlayer(callerID)
 
+	if not Player then return end
+
+	local charinfo = Player.PlayerData.charinfo
+	local job      = Player.PlayerData.job
+	local meta     = Player.PlayerData.metadata
+
+	local fname = charinfo and charinfo.firstname or "Unknown"
+	local lname = charinfo and charinfo.lastname or ""
 	local data = {
-		name = Player.PlayerData.charinfo.firstname.." "..Player.PlayerData.charinfo.lastname,
-		rank = Player.PlayerData.job.grade.name,
-		csi = Player.PlayerData.metadata.callsign
-		
+		name = fname .. " " .. lname,
+		rank = job and job.grade and job.grade.name or "Unknown",
+		csi  = meta and meta.callsign or ""
 	}
 
-	TriggerClientEvent('badge:open', targetID, data)
-	TriggerClientEvent( 'badge:shot', targetID, source )
+	-- Validate targetID is a real connected player; fall back to caller.
+	local resolvedTarget = targetID
+	if not GetPlayerName(resolvedTarget) then
+		resolvedTarget = callerID
+	end
+
+	TriggerClientEvent('badge:open', resolvedTarget, data)
+	TriggerClientEvent('badge:shot', resolvedTarget, callerID)
 end)
 
 QBCore.Functions.CreateUseableItem('specialbadge', function(source, item)
