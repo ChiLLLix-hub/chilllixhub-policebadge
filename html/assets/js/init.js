@@ -2,7 +2,6 @@ const open = (data) => {
   $('#name').css('color', '#282828');
 
   $('#name').text(data.name);
-  $('#dob').text(data.dateofbirth);
   $('#rank').text(data.rank);
   $('#csi').text(data.csi);
 
@@ -13,12 +12,10 @@ const open = (data) => {
 
 const close = () => {
   $('#name').text('');
-  $('#dob').text('');
-  $('#height').text('');
+  $('#rank').text('');
+  $('#csi').text('');
   $('#signature').text('');
-  $('#sex').text('');
   $('#id-card').hide();
-  $('#licenses').html('');
 }
 
 $(document).ready(function(){
